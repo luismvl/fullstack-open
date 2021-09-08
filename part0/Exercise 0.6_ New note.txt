@@ -1,0 +1,25 @@
+title Exercise 0.6: New note
+
+note left of browser:
+user submits new note
+end note
+
+note over browser:
+updates the array of notes and 
+redraw the notes list with the new note
+end note
+
+note over browser:
+sends new note to server in JSON format
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+parses the new note and updates 
+the notes array in the server
+end note
+
+server-->browser: HTTP 201 created
+
+
