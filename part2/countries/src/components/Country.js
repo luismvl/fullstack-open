@@ -7,11 +7,9 @@ const Weather = ({ weather: { current } }) => {
         <div>
             <p>Temperature: {current.temperature}</p>
             <img src={current.weather_icons[0]} alt='weather icon' />
-            <p>Wind: {current.wing_speed} mph direction {current.wing_dir}</p>
+            <p>Wind: {current.wing_speed} kmph direction {current.wing_dir}</p>
         </div>
-    )
-
-    
+    )    
 }
 
 const Country = ({ country }) => {
@@ -22,6 +20,7 @@ const Country = ({ country }) => {
         axios.get(`http://api.weatherstack.com/current?access_key=${API_KEY}&query=${country.capital}`)
             .then(res => setWeather(res.data))
     })
+    console.log('weather', weather)
     return (
         <div>
             <h2>{country.name}</h2>
