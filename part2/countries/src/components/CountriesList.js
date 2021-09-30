@@ -1,21 +1,19 @@
 import React, { useState } from 'react'
 import Country from './Country'
 
-const CountryItem = ({ country, setShowCountry }) => {
-    return (
-        <div>
-            <p>{country.name} <button onClick={() => setShowCountry(country)}>show</button></p> 
-        </div>
-    )
-}
-
 const CountriesList = ({ countries }) => {
     const [showCountry, setShowCountry] = useState('')
+    console.log('countries', countries)
 
     return (
         <div>
-            {countries.map(country =>
-                <CountryItem key={country.name} country={country} setShowCountry={setShowCountry} />)}
+            {
+                countries.map(country =>
+                    <p key={country.name}>{country.name}
+                        <button onClick={() => setShowCountry(country)}>show</button>
+                    </p>
+                )
+            }
 
             {showCountry ? <Country country={showCountry} /> : ''}
         </div>
