@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js -w index.js -w .env",
+    "dev": "nodemon index.js -w index.js -w app.js -w .env -w controllers -w models -w utils",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
