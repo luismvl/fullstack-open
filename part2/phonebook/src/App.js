@@ -46,6 +46,11 @@ const App = () => {
           setNotification({ text: `Added ${returnedPerson.name}`, type: 'succes' })
           setTimeout(() => setNotification({ text: '', type: '' }), 5000)
         })
+        .catch(error => {
+          console.log(error.response)
+          setNotification({ text: `Added ${error.response.data.error}`, type: 'error' })
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
+        })
     }
 
     setNewName('')
