@@ -1,78 +1,87 @@
-import React, { useState, useEffect } from 'react'
-import Filter from './components/Filter'
-import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
-import personService from './services/persons'
-import Notification from './components/Notification'
+import React, { useState, useEffect } from 'react';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Persons from './components/Persons';
+import personService from './services/persons';
+import Notification from './components/Notification';
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState([]);
   useEffect(() => {
-    personService.getAll().then(initialData => setPersons(initialData))
-  }, [])
+    personService.getAll().then(initialData => setPersons(initialData));
+  }, []);
 
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [filter, setFilter] = useState('')
-  const [notification, setNotification] = useState({ text: '', type: '' })
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState({ text: '', type: '' });
 
   const personsToShow = persons.filter(
-    person => person.name.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+    person => person.name.toLowerCase().indexOf(filter.toLowerCase()) > -1);
 
   const addPerson = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const newPerson = {
       name: newName,
       number: newNumber
-    }
-    const personExist = persons.find(p => p.name === newPerson.name)
-    const message = `${newName} is already added to phonebook, replace the old number with a new one?`
+    };
+    const personExist = persons.find(p => p.name === newPerson.name);
+    const message = `${newName} is already added to phonebook, replace the old number with a new one?`;
     if (personExist && window.confirm(message)) {
       personService.update(personExist.id, newPerson)
         .then(returnedPerson => {
-          setPersons(persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson))
-          setNotification({ text: `Updated ${newName}`, type: 'success' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
+          setPersons(persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson));
+          setNotification({ text: `Updated ${newName}`, type: 'success' });
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000);
         })
-        .catch(() => {
-          setNotification({ text: `Information of ${newName} has already been remove from server`, type: 'error' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
-          setPersons(persons.filter(p => p.id !== personExist.id))
-        })
+        .catch((error) => {
+          console.log(error.response);
+          if (error.response.status === 404) {
+            setNotification({ text: `Information of ${newName} has already been remove from server`, type: 'error' });
+            setTimeout(() => setNotification({ text: '', type: '' }), 5000);
+            setPersons(persons.filter(p => p.id !== personExist.id));
+          };
+
+          if (error.response.status === 400) {
+            console.log('a')
+            setNotification({ text: `Added ${error.response.data.error}`, type: 'error' });
+            setTimeout(() => setNotification({ text: '', type: '' }), 5000);
+          }
+        });
     } else {
       personService.create(newPerson)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
-          setNotification({ text: `Added ${returnedPerson.name}`, type: 'succes' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
+          setPersons(persons.concat(returnedPerson));
+          setNotification({ text: `Added ${returnedPerson.name}`, type: 'succes' });
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000);
         })
         .catch(error => {
-          console.log(error.response)
-          setNotification({ text: `Added ${error.response.data.error}`, type: 'error' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
-        })
-    }
+          console.log(error.response);
+          setNotification({ text: `Added ${error.response.data.error}`, type: 'error' });
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000);
+        });
+    };
 
-    setNewName('')
-    setNewNumber('')
-  }
+    setNewName('');
+    setNewNumber('');
+  };
 
   const deletePerson = id => {
-    const person = persons.find(p => p.id === id)
+    const person = persons.find(p => p.id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
       personService.remove(id)
         .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
-          setNotification({ text: `Deleted ${person.name}`, type: 'succes' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
+          setPersons(persons.filter(p => p.id !== id));
+          setNotification({ text: `Deleted ${person.name}`, type: 'succes' });
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000);
         })
         .catch(() => {
-          setNotification({ text: `Information of ${person.name} has already been remove from server`, type: 'error' })
-          setTimeout(() => setNotification({ text: '', type: '' }), 5000)
-          setPersons(persons.filter(p => p.id !== person.id))
-        })
+          setNotification({ text: `Information of ${person.name} has already been remove from server`, type: 'error' });
+          setTimeout(() => setNotification({ text: '', type: '' }), 5000);
+          setPersons(persons.filter(p => p.id !== person.id));
+        });
     }
-  }
+  };
 
   return (
     <div>
@@ -89,7 +98,7 @@ const App = () => {
       <h3>Numbers</h3>
       <Persons persons={personsToShow} handleDelete={deletePerson} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
