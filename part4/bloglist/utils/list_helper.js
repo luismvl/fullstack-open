@@ -7,7 +7,21 @@ function totalLikes(blogs) {
   return blogs.reduce(reducer, 0);
 }
 
+function favoriteBlog(blogs) {
+  return blogs.reduce((favBlog, currentBlog) => {
+    if (currentBlog.likes >= favBlog.likes) {
+      return {
+        title: currentBlog.title,
+        author: currentBlog.author,
+        likes: currentBlog.likes
+      };
+    }
+    return favBlog;
+  });
+}
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 };
