@@ -1,6 +1,7 @@
 const listHelper = require('../utils/list_helper');
 
-describe('favorite blog', () => {
+
+describe('most blogs', () => {
   const blogs = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -52,34 +53,21 @@ describe('favorite blog', () => {
     }
   ];
 
-  test('return blog that has most likes from a list of blogs', () => {
-    const result = listHelper.favoriteBlog(blogs);
-    const favBlog = {
-      title: "Canonical string reduction",
-      author: "Edsger W. Dijkstra",
-      likes: 12,
+  test('return author that has most blogs from a list of blogs', () => {
+    const result = listHelper.mostBlogs(blogs);
+    const author = {
+      author: "Robert C. Martin",
+      blogs: 3,
     };
-    expect(result).toEqual(favBlog);
+    expect(result).toEqual(author);
   });
 
-  test('when many blogs are the most liked, equals to the last one', () => {
-    const blogsWithManyFavorites = [
-      ...blogs,
-      {
-        _id: "5a422b3a1b54a643534d17f9",
-        title: "Last Post",
-        author: "Luis",
-        url: "http://lastpost.com",
-        likes: 12,
-        __v: 0
-      }
-    ];
-    const favBlog = {
-      title: "Last Post",
-      author: "Luis",
-      likes: 12,
+  test('when many authors are top bloggers, return the last one', () => {
+    const author = {
+      author: "Robert C. Martin",
+      blogs: 3,
     };
-    const result = listHelper.favoriteBlog(blogsWithManyFavorites);
-    expect(result).toEqual(favBlog);
+    const result = listHelper.mostBlogs(blogs.slice(0, blogs.length));
+    expect(result).toEqual(author);
   });
 });
