@@ -27,6 +27,11 @@ test('correct amount of blogs', async () => {
   expect(res.body).toHaveLength(helper.initialBlogs.length)
 })
 
+test('the unique identifier property of the blog posts is by default _id', async () => {
+  const blog = await Blog.findOne({})
+  expect(blog._id).toBeDefined()
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
