@@ -50,7 +50,7 @@ test('verifies that HTTP POST request to /api/blogs successfully creates a new b
   expect(totalBlogs).toHaveLength(helper.initialBlogs.length + 1)
 })
 
-test('verifies that if the likes property is missing from the request, it will default to the value 0', async () => {
+test('verifies that if the likes property is missing, it will default to the value 0', async () => {
   const newBlog = {
     title: 'titlefortest',
     author: 'author',
@@ -66,6 +66,20 @@ test('verifies that if the likes property is missing from the request, it will d
   const totalBlogs = await helper.blogsInDb()
   const addedBlog = totalBlogs.find((blog) => blog.title === 'titlefortest')
   expect(addedBlog.likes).toBe(0)
+})
+
+test('verifies that if the url of title property are missing, the backend responds with 400 Bad Request.', async () => {
+  const newBlogNoTitle = {
+    author: 'author',
+    url: 'url.com',
+  }
+  await api.post('/api/blogs').send(newBlogNoTitle).expect(400)
+
+  const newBlogNoUrl = {
+    title: 'title',
+    author: 'author',
+  }
+  await api.post('/api/blogs').send(newBlogNoUrl).expect(400)
 })
 
 afterAll(() => {
