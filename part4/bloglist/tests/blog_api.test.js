@@ -32,6 +32,24 @@ test('the unique identifier property of the blog posts is by default _id', async
   expect(blog._id).toBeDefined()
 })
 
+test('verifies that HTTP POST request to /api/blogs successfully creates a new blog post', async () => {
+  const newBlog = {
+    title: 'title',
+    author: 'author',
+    url: 'url.com',
+    likes: 0,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const totalBlogs = await helper.blogsInDb()
+  expect(totalBlogs).toHaveLength(helper.initialBlogs.length + 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
