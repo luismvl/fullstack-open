@@ -50,6 +50,24 @@ test('verifies that HTTP POST request to /api/blogs successfully creates a new b
   expect(totalBlogs).toHaveLength(helper.initialBlogs.length + 1)
 })
 
+test('verifies that if the likes property is missing from the request, it will default to the value 0', async () => {
+  const newBlog = {
+    title: 'titlefortest',
+    author: 'author',
+    url: 'url.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const totalBlogs = await helper.blogsInDb()
+  const addedBlog = totalBlogs.find((blog) => blog.title === 'titlefortest')
+  expect(addedBlog.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
