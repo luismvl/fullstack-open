@@ -8,7 +8,7 @@ const initialBlogs = [
     likes: 3,
   },
   {
-    content: 'Blog title 2',
+    title: 'Blog title 2',
     author: 'Luis Vela',
     url: 'url2',
     likes: 7,
