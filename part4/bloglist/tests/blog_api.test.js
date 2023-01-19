@@ -86,7 +86,7 @@ describe('addition of a new blog', () => {
   })
 })
 
-describe('deleting notes', () => {
+describe('deleting blogs', () => {
   test('creates a blog and delete it, then verifies if the blog exist in db', async () => {
     const newBlog = {
       title: 'title',
@@ -120,6 +120,51 @@ describe('deleting notes', () => {
 
     await api.delete(`/api/blogs/${response.body._id}`).expect(204)
     await api.delete(`/api/blogs/${response.body._id}`).expect(404)
+  })
+})
+
+describe('updating notes', () => {
+  test('change every field on a blog succesfully', async () => {
+    const blog = (await helper.blogsInDb())[0]
+
+    const updatedProps = {
+      title: 'blog test',
+      author: 'author test',
+      url: 'url.test',
+      likes: 0,
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blog._id}`)
+      .send(updatedProps)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    delete response.body._id
+    delete response.body._v
+    delete response.body.__v
+
+    expect(response.body).toEqual(updatedProps)
+  })
+
+  test('when updating a non existing blog, returns status 404', async () => {
+    const newBlog = {
+      title: 'title',
+      author: 'author',
+      url: 'url.com',
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    await api.delete(`/api/blogs/${response.body._id}`).expect(204)
+    await api
+      .put(`/api/blogs/${response.body._id}`)
+      .send({ title: 'new title' })
+      .expect(404)
   })
 })
 
